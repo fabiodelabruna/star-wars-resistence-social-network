@@ -10,14 +10,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import fabiodelabruna.starwars.resistence.socialnetwork.dto.AverageResourcesPerRebelStatisticsDto;
 import fabiodelabruna.starwars.resistence.socialnetwork.dto.InventoryTradeDto;
+import fabiodelabruna.starwars.resistence.socialnetwork.dto.LostPointsStatisticsDto;
+import fabiodelabruna.starwars.resistence.socialnetwork.dto.RebelAndTraitorStatisticsDto;
 import fabiodelabruna.starwars.resistence.socialnetwork.model.InventoryItem;
 import fabiodelabruna.starwars.resistence.socialnetwork.model.Localization;
 import fabiodelabruna.starwars.resistence.socialnetwork.model.Rebel;
 import fabiodelabruna.starwars.resistence.socialnetwork.repository.ItemRepository;
 import fabiodelabruna.starwars.resistence.socialnetwork.repository.RebelRepository;
 import fabiodelabruna.starwars.resistence.socialnetwork.service.exception.DifferentPointsToTradeException;
+import fabiodelabruna.starwars.resistence.socialnetwork.service.exception.EmptyStatisticsDataException;
 import fabiodelabruna.starwars.resistence.socialnetwork.service.exception.InsuficientItemsToTradeException;
+import fabiodelabruna.starwars.resistence.socialnetwork.service.exception.TraitorCanNotTradeItemsEception;
 
 @Service
 public class RebelService {
@@ -69,6 +74,50 @@ public class RebelService {
         rebelRepository.deleteById(id);
     }
 
+    public RebelAndTraitorStatisticsDto percentageStatistics() {
+        final List<Rebel> all = findAll();
+
+        if (all.isEmpty()) {
+            throw new EmptyStatisticsDataException();
+        }
+
+        double total = all.size();
+        double traitors = all.stream().filter(Rebel::isTraitor).count();
+        double rebels = total - traitors;
+
+        double traitorsPercentage = 100 * traitors / total;
+        double rebelsPercentage = 100 * rebels / total;
+
+        return new RebelAndTraitorStatisticsDto((long) total, rebelsPercentage, traitorsPercentage);
+    }
+
+    public LostPointsStatisticsDto lostPointsStatistics() {
+        final List<Rebel> all = findAll();
+
+        if (all.isEmpty()) {
+            throw new EmptyStatisticsDataException();
+        }
+
+        long total = all.stream() //
+                        .map(Rebel::getInventory).flatMap(List::stream) //
+                        .map(item -> item.getAmount() * item.getItem().getPoints()) //
+                        .collect(Collectors.summarizingLong(i -> i)).getSum();
+
+        long lostPoints = all.stream() //
+                        .filter(Rebel::isTraitor) //
+                        .map(Rebel::getInventory).flatMap(List::stream) //
+                        .map(item -> item.getAmount() * item.getItem().getPoints()) //
+                        .collect(Collectors.summarizingLong(i -> i)).getSum();
+
+        double lostPercentage = 100 * Double.valueOf(lostPoints) / Double.valueOf(total);
+
+        return new LostPointsStatisticsDto(total, lostPoints, lostPercentage);
+    }
+
+    public List<AverageResourcesPerRebelStatisticsDto> averageResourcesStatistics() {
+        return rebelRepository.averageResourcesStatistics();
+    }
+
     public List<Rebel> tradeItems(final InventoryTradeDto dto) {
         if (!hasSamePoints(dto)) {
             throw new DifferentPointsToTradeException();
@@ -76,6 +125,9 @@ public class RebelService {
 
         final Rebel rebelA = findById(dto.getRebelA().getId());
         final Rebel rebelB = findById(dto.getRebelB().getId());
+
+        validateIfRebelIsTraitor(rebelA);
+        validateIfRebelIsTraitor(rebelB);
 
         trade(dto.getRebelA(), rebelB, rebelA);
         trade(dto.getRebelB(), rebelA, rebelB);
@@ -140,6 +192,12 @@ public class RebelService {
         inventory.forEach(invetoryItem -> invetoryItem.setItem(itemRepository.findById(invetoryItem.getItem().getId()).get()));
         return inventory.stream().map(item -> item.getAmount() * item.getItem().getPoints()) //
                         .collect(Collectors.summarizingDouble(d -> d)).getSum();
+    }
+
+    private void validateIfRebelIsTraitor(final Rebel rebel) {
+        if (rebel.isTraitor()) {
+            throw new TraitorCanNotTradeItemsEception(rebel.getName());
+        }
     }
 
 }

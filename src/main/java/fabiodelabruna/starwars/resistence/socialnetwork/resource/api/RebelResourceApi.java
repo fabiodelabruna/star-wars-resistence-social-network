@@ -8,7 +8,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import fabiodelabruna.starwars.resistence.socialnetwork.dto.AverageResourcesPerRebelStatisticsDto;
 import fabiodelabruna.starwars.resistence.socialnetwork.dto.InventoryTradeDto;
+import fabiodelabruna.starwars.resistence.socialnetwork.dto.LostPointsStatisticsDto;
+import fabiodelabruna.starwars.resistence.socialnetwork.dto.RebelAndTraitorStatisticsDto;
 import fabiodelabruna.starwars.resistence.socialnetwork.model.Localization;
 import fabiodelabruna.starwars.resistence.socialnetwork.model.Rebel;
 
@@ -29,6 +32,12 @@ public interface RebelResourceApi {
 
     void delete(final Long id);
 
-    public List<Rebel> tradeItems(final InventoryTradeDto inventoryTradeDto);
+    RebelAndTraitorStatisticsDto percentageStatistics();
+
+    LostPointsStatisticsDto lostPointsStatistics();
+
+    List<AverageResourcesPerRebelStatisticsDto> averageResourcesStatistics();
+
+    List<Rebel> tradeItems(final InventoryTradeDto inventoryTradeDto);
 
 }

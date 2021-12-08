@@ -7,11 +7,11 @@ public class InsuficientItemsToTradeException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    private String rebelName;
+    private final String rebelName;
 
-    private String itemName;
+    private final String itemName;
 
-    private int amount;
+    private final int amount;
 
     public InsuficientItemsToTradeException(final String rebelName, final String itemName, final int amount) {
         this.rebelName = rebelName;

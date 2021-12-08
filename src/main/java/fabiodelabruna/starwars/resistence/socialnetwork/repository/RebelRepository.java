@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import fabiodelabruna.starwars.resistence.socialnetwork.model.Rebel;
 
 @Repository
-public interface RebelRepository extends JpaRepository<Rebel, Long> {
+public interface RebelRepository extends JpaRepository<Rebel, Long>, RebelRepositoryQuery {
 
 }

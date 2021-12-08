@@ -19,7 +19,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import fabiodelabruna.starwars.resistence.socialnetwork.service.exception.DifferentPointsToTradeException;
+import fabiodelabruna.starwars.resistence.socialnetwork.service.exception.EmptyStatisticsDataException;
 import fabiodelabruna.starwars.resistence.socialnetwork.service.exception.InsuficientItemsToTradeException;
+import fabiodelabruna.starwars.resistence.socialnetwork.service.exception.TraitorCanNotTradeItemsEception;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -65,6 +67,24 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
         final List<Error> errors = List.of(new Error(message, ex.toString()));
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler({ TraitorCanNotTradeItemsEception.class })
+    public ResponseEntity<Object> handleTraitorCanNotTradeItemsEception(final TraitorCanNotTradeItemsEception ex,
+                    final WebRequest request) {
+
+        final String message = messageSource.getMessage("traitor.can-not.trade.items", new Object[] { ex.getTraitorName() },
+                        LocaleContextHolder.getLocale());
+
+        final List<Error> errors = List.of(new Error(message, ex.toString()));
+        return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler({ EmptyStatisticsDataException.class })
+    public ResponseEntity<Object> handleEmptyStatisticsDataException(final EmptyStatisticsDataException ex,
+                    final WebRequest request) {
+
+        return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.NO_CONTENT, request);
     }
 
     private List<Error> createErrorList(final BindingResult bindingResult) {

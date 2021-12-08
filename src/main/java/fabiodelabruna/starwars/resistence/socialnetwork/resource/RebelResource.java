@@ -19,7 +19,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import fabiodelabruna.starwars.resistence.socialnetwork.dto.AverageResourcesPerRebelStatisticsDto;
 import fabiodelabruna.starwars.resistence.socialnetwork.dto.InventoryTradeDto;
+import fabiodelabruna.starwars.resistence.socialnetwork.dto.LostPointsStatisticsDto;
+import fabiodelabruna.starwars.resistence.socialnetwork.dto.RebelAndTraitorStatisticsDto;
 import fabiodelabruna.starwars.resistence.socialnetwork.event.CreatedResourceEvent;
 import fabiodelabruna.starwars.resistence.socialnetwork.model.Localization;
 import fabiodelabruna.starwars.resistence.socialnetwork.model.Rebel;
@@ -82,6 +85,24 @@ public class RebelResource implements RebelResourceApi {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable final Long id) {
         rebelService.delete(id);
+    }
+
+    @Override
+    @GetMapping("/statistics/rebels-traitors-percentage")
+    public RebelAndTraitorStatisticsDto percentageStatistics() {
+        return rebelService.percentageStatistics();
+    }
+
+    @Override
+    @GetMapping("/statistics/lost-points")
+    public LostPointsStatisticsDto lostPointsStatistics() {
+        return rebelService.lostPointsStatistics();
+    }
+
+    @Override
+    @GetMapping("/statistics/average-resources")
+    public List<AverageResourcesPerRebelStatisticsDto> averageResourcesStatistics() {
+        return rebelService.averageResourcesStatistics();
     }
 
     @Override

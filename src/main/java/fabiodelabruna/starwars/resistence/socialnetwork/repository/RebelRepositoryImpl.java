@@ -14,9 +14,14 @@ public class RebelRepositoryImpl implements RebelRepositoryQuery {
 
     @Override
     public List<AverageResourcesPerRebelStatisticsDto> averageResourcesStatistics() {
+        final String dtoClassName = AverageResourcesPerRebelStatisticsDto.class.getCanonicalName();
+
         final StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append(
-                        "select new fabiodelabruna.starwars.resistence.socialnetwork.dto.AverageResourcesPerRebelStatisticsDto(item.name, avg(inventory.amount)) ");
+        // queryBuilder.append(
+        // "select new
+        // fabiodelabruna.starwars.resistence.socialnetwork.dto.AverageResourcesPerRebelStatisticsDto(item.name,
+        // avg(inventory.amount)) ");
+        queryBuilder.append("select new ").append(dtoClassName).append("( item.name, avg(inventory.amount) ) ");
         queryBuilder.append("from Rebel rebel  ");
         queryBuilder.append("join rebel.inventory inventory ");
         queryBuilder.append("join inventory.item item ");

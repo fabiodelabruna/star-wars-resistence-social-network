@@ -54,7 +54,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
         final String message = messageSource.getMessage("different.points.to.trade", null, LocaleContextHolder.getLocale());
         final List<Error> errors = List.of(new Error(message, ex.toString()));
-        return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+        return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler({ InsuficientItemsToTradeException.class })
@@ -66,7 +66,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
                         LocaleContextHolder.getLocale());
 
         final List<Error> errors = List.of(new Error(message, ex.toString()));
-        return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+        return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler({ TraitorCanNotTradeItemsEception.class })
@@ -77,7 +77,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
                         LocaleContextHolder.getLocale());
 
         final List<Error> errors = List.of(new Error(message, ex.toString()));
-        return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+        return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler({ EmptyStatisticsDataException.class })

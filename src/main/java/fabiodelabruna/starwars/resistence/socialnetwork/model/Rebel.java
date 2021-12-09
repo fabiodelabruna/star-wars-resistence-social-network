@@ -23,15 +23,19 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Builder
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @ApiModel("RebelModel")
 @Entity
 @Table(name = "rebel")

@@ -12,15 +12,19 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Builder
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "inventory_item")
 public class InventoryItem {
